@@ -451,7 +451,7 @@
             })
             let ogComplaints
             const getComplaints = async () => {
-                let result = await fetch('https://copsbot-api.herokuapp.com/api/complaints')
+                let result = await fetch('https://cops-bot.herokuapp.com/api/complaints?firebase=true')
                 result = await result.json()
                 const fetchedComplaints = result.complaints
                 console.log(fetchedComplaints)
@@ -497,7 +497,7 @@
                 }
             }
             function changeStatus(id) {
-                fetch('https://copsbot-api.herokuapp.com/api/complaints' + id, {
+                fetch('https://cops-bot.herokuapp.com.com/api/complaints' + id, {
                     method: 'CHECKOUT'
                 }).then(res => res.json()).then(json => {
                     if (json.statusBefore == 0) {
@@ -516,8 +516,8 @@
                 })
             }
             function info(id) {
-                fetch(`https://copsbot-api.herokuapp.com/api/complaints/${id}`).then(res => res.json()).then(json => {
-                    $('#fullName').text(json.complaint.victimName)
+                fetch(`https://cops-bot.herokuapp.com/api/complaints/${id}`).then(res => res.json()).then(json => {
+                    $('#fullName').text(json.complaint.name)
                     $('#complaints').text(json.complaint.complaint)
                     $('#age').text(json.complaint.age)
                     $('#imei').text(json.complaint.IMEI)
@@ -565,36 +565,36 @@
 
             function whatsapp(id) {
                 $('#u_id').val(id)
-                    < !--$('#phn').val('')-->
-                        $("#my_Modal").modal()
+
+                $("#my_Modal").modal()
 
             }
             async function notify() {
 
                 let obj = {
-< !--phoneNumber: $('#phn').val(), -->
+
                     region: $("#region option:selected").text(),
-                        complaintId: $('#u_id').val()
-            }
-            $("#my_Modal").modal('toggle')
-            let result = await fetch('https://cops-bot.herokuapp.com/api/whatsapp', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(obj)
-            })
-            result = await result.json()
-            console.log(result)
-            iziToast.show({
-                timeout: 3000,
-                position: 'topRight',
-                icon: 'fas fa-check-circle',
-                iconColor: 'green',
-                backgroundColor: '#61F75F',
-                transitionIn: 'fadeInLeft',
-                message: `Data sent Successfully !!`
-            });
+                    complaintId: $('#u_id').val()
+                }
+                $("#my_Modal").modal('toggle')
+                let result = await fetch('https://cops-bot.herokuapp.com/api/whatsapp', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(obj)
+                })
+                result = await result.json()
+                console.log(result)
+                iziToast.show({
+                    timeout: 3000,
+                    position: 'topRight',
+                    icon: 'fas fa-check-circle',
+                    iconColor: 'green',
+                    backgroundColor: '#61F75F',
+                    transitionIn: 'fadeInLeft',
+                    message: `Data sent Successfully !!`
+                });
 
             }
 
