@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-    <title>Dashboard</title>
+    <title>Station Admin</title>
     <link rel="shortcut icon" type="image/png" href="new_up.jpeg">
     <!-- Required meta tags -->
     <meta charset="utf-8">
@@ -48,8 +48,8 @@
                 <ul class="nav">
                     <li class="nav-item active  ">
                         <a class="nav-link" href="javascript:void(0)">
-                            <i class="material-icons">dashboard</i>
-                            <p>Dashboard</p>
+                            <i class="material-icons"></i>
+                            <p>Station Admin</p>
                         </a>
                     </li>
 
@@ -62,7 +62,7 @@
             <nav class="navbar navbar-expand-lg navbar-transparent navbar-absolute fixed-top ">
                 <div class="container-fluid">
                     <div class="navbar-wrapper">
-                        <a class="navbar-brand" href="javascript:void(0)">Dashboard</a>
+                        <a class="navbar-brand" href="javascript:void(0)">"Region" COMPLAINTS </a>
                     </div>
                     <button class="navbar-toggler" type="button" data-toggle="collapse" aria-controls="navigation-index"
                         aria-expanded="false" aria-label="Toggle navigation">
@@ -277,9 +277,8 @@
         <!-- Control Center for Material Dashboard: parallax effects, scripts for the example pages etc -->
         <script src="./static/material-dashboard.js?v=2.1.0"></script>
         <!-- Material Dashboard DEMO methods, don't include it in your project! -->
-        {% assets "main_js" %}
-        <script type="text/javascript" src="{{ ASSET_URL }}"></script>
-        {% endassets %}
+        <script src="./javascript/script.js"></script>
+        <script src="./javascript/superadmin.js"></script>
         <script>
             $(document).ready(function () {
                 $().ready(function () {
@@ -442,46 +441,47 @@
                 });
             });
         </script>
-        <script src="./javascript/script.js"></script>
-        <script src="./javascript/admin.js"></script>
         <script>
             $(document).ready(() => {
                 getComplaints()
                 setInterval(() => {
                     getComplaints()
-                }, 1000)
+                }, 10000)
             })
             let ogComplaints
             const getComplaints = async () => {
-                let result = await fetch('https://cops-bot.herokuapp.com/api/complaints?firebase=true')
+                let result = await fetch('https://copsbot-api.herokuapp.com/api/complaints', {
+                    headers: {
+                        'Authorization': user.token
+                    }
+                })
                 result = await result.json()
                 const fetchedComplaints = result.complaints
-                console.log(fetchedComplaints)
                 let element
                 let c = 1
-                for (let i = result.count - 1; i >= 0; i--) {
+                for (let i = fetchedComplaints.length - 1; i >= 0; i--) {
                     let button
-                    switch (fetchedComplaints[i].status) {
-                        case '0':
+                    switch (fetchedComplaints[i]['status']) {
+                        case 0:
                             button = `<td><a id="${fetchedComplaints[i]._id}" class="btn btn-sm btn-warning" onclick="changeStatus('${fetchedComplaints[i]._id}')" >Pending</a></td>`
                             break;
-                        case '1':
+                        case 1:
                             button = `<td><a id="${fetchedComplaints[i]._id}" class="btn btn-sm btn-success" onclick="changeStatus('${fetchedComplaints[i]._id}')" >Active</a></td>`
                             break;
-                        case '2':
+                        case 2:
                             button = `<td><a id="${fetchedComplaints[i]._id}" class="btn btn-sm btn-danger" onclick="changeStatus('${fetchedComplaints[i]._id}')" >Closed</a></td>`
                             break;
                     }
                     let e = `<tr>
-            <th scope="row">${c}<input type='text' hidden='true' value='${fetchedComplaints[i]._id}'></th>
-                        <td>${fetchedComplaints[i].victimName}</td>
-            <td>${fetchedComplaints[i].complaint}</td>
-             ${button}
-            <td><a href="/map?lat=${fetchedComplaints[i].ilat}&lng=${fetchedComplaints[i].ilng}" class="btn btn-sm btn-primary"> <span class="glyphicon glyphicon-map-marker"></span>Map</a></td>
-            <td><a class="btn btn-sm btn-default" onclick="info('${fetchedComplaints[i]._id}')" >More Info</a></td>
-            <td><a class="btn btn-sm btn-success" onclick="whatsapp('${fetchedComplaints[i]._id}')" ><i class="fab fa-whatsapp"></i></a></td>
-            <td><a class="btn btn-sm btn-danger" onclick="delete_complaint('${fetchedComplaints[i]._id}')" ><i class="fas fa-trash"></i></a></td>
-            </tr>`
+                    <th scope="row">${c}<input type='text' hidden='true' value='${fetchedComplaints[i]._id}'></th>
+                                <td>${fetchedComplaints[i].victimName}</td>
+                    <td>${fetchedComplaints[i].complaint}</td>
+                    ${button}
+                    <td><a href="./map.html?lat=${fetchedComplaints[i].iLatitude}&lng=${fetchedComplaints[i].iLongitude}" class="btn btn-sm btn-primary"> <span class="glyphicon glyphicon-map-marker"></span>Map</a></td>
+                    <td><a class="btn btn-sm btn-default" onclick="info('${fetchedComplaints[i]._id}')" >More Info</a></td>
+                    <td><a class="btn btn-sm btn-success" onclick="whatsapp('${fetchedComplaints[i]._id}')" ><i class="fab fa-whatsapp"></i></a></td>
+                    <td><a class="btn btn-sm btn-danger" onclick="delete_complaint('${fetchedComplaints[i]._id}')" ><i class="fas fa-trash"></i></a></td>
+                    </tr>`
                     element = element + e
                     c++
                 }
@@ -499,8 +499,12 @@
                 }
             }
             function changeStatus(id) {
-                fetch('https://cops-bot.herokuapp.com.com/api/complaints' + id, {
-                    method: 'CHECKOUT'
+                console.log(id)
+                fetch('https://copsbot-api.herokuapp.com/api/complaints/' + id, {
+                    method: 'CHECKOUT',
+                    headers: {
+                        'Authorization': user.token
+                    }
                 }).then(res => res.json()).then(json => {
                     if (json.statusBefore == 0) {
                         $(`#${id}`).text('Active')
@@ -511,22 +515,30 @@
                         $(`#${id}`).addClass('btn-danger')
                         setTimeout(() => {
                             location.reload()
-                        }, 5000)
+                        }, 1500)
                     }
                 }).catch(err => {
                     console.log(err)
                 })
             }
             function info(id) {
-                fetch(`https://cops-bot.herokuapp.com/api/complaints/${id}`).then(res => res.json()).then(json => {
-                    $('#fullName').text(json.complaint.name)
+                console.log(id)
+                fetch(`https://copsbot-api.herokuapp.com/api/complaints/${id}`, {
+                    headers: {
+                        'Authorization': user.token
+                    }
+                }).then(res => res.json()).then(json => {
+                    console.log(json)
+                    $('#fullName').text(json.complaint.victimName)
                     $('#complaints').text(json.complaint.complaint)
                     $('#age').text(json.complaint.age)
-                    $('#imei').text(json.complaint.IMEI)
-                    $('#phno').text(json.complaint.phoneNumber)
-                    $('#date').text(json.complaint.dateOfIncident)
-                    $('#time').text(json.complaint.timeOfIncident)
-                    $('#place').text(json.complaint.ilat.substring(0, 8) + ' ' + json.complaint.ilng.substring(0, 8))
+                    $('#imei').text(json.complaint.userInfo[0].IMEI)
+                    $('#phno').text(json.complaint.userInfo[0].phoneNumber)
+                    let d = json.complaint.createdAt
+                    d = d.split('T')
+                    $('#date').text(d[0])
+                    $('#time').text(d[1])
+                    $('#place').text(json.complaint.iLatitude + ' ' + json.complaint.iLongitude)
                     switch (json.complaint.gender) {
                         case 'M':
                             $('#gender').text('Male')
@@ -539,10 +551,10 @@
                             break;
                     }
                     switch (json.complaint.status) {
-                        case '0':
+                        case 0:
                             $('#status').text('Pending')
                             break;
-                        case '1':
+                        case 1:
                             $('#status').text('Active')
                             break;
                     }
@@ -551,8 +563,11 @@
             }
 
             function delete_complaint(id) {
-                fetch(`https://cops-bot.herokuapp.com/api/complaints/${id}`, {
-                    method: 'DELETE'
+                fetch(`https://copsbot-api.herokuapp.com/api/complaints/${id}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': user.token
+                    }
                 }).then(res => res.json()).then(json => {
                     iziToast.show({
                         timeout: 3000,
@@ -562,6 +577,7 @@
                         transitionIn: 'fadeInLeft',
                         message: `Complaint Deleted`
                     });
+                    location.reload()
                 }).catch(err => console.log(err))
             }
 

@@ -118,7 +118,7 @@
                                             <th>Location</th>
                                             <th>Data</th>
                                             <th>Share</th>
-                                            <th>Delete</th>
+                                            <th>Region</th>
 
                                         </tr>
                                     </thead>
@@ -463,13 +463,13 @@
                     let button
                     switch (fetchedComplaints[i]['status']) {
                         case 0:
-                            button = `<td><a id="${fetchedComplaints[i]._id}" class="btn btn-sm btn-warning" onclick="changeStatus('${fetchedComplaints[i]._id}')" >Pending</a></td>`
+                            button = `<td><a id="${fetchedComplaints[i]._id}" class="btn btn-sm btn-warning" >Pending</a></td>`
                             break;
                         case 1:
-                            button = `<td><a id="${fetchedComplaints[i]._id}" class="btn btn-sm btn-success" onclick="changeStatus('${fetchedComplaints[i]._id}')" >Active</a></td>`
+                            button = `<td><a id="${fetchedComplaints[i]._id}" class="btn btn-sm btn-success">Active</a></td>`
                             break;
                         case 2:
-                            button = `<td><a id="${fetchedComplaints[i]._id}" class="btn btn-sm btn-danger" onclick="changeStatus('${fetchedComplaints[i]._id}')" >Closed</a></td>`
+                            button = `<td><a id="${fetchedComplaints[i]._id}" class="btn btn-sm btn-danger">Closed</a></td>`
                             break;
                     }
                     let e = `<tr>
@@ -480,7 +480,7 @@
                     <td><a href="./map.html?lat=${fetchedComplaints[i].iLatitude}&lng=${fetchedComplaints[i].iLongitude}" class="btn btn-sm btn-primary"> <span class="glyphicon glyphicon-map-marker"></span>Map</a></td>
                     <td><a class="btn btn-sm btn-default" onclick="info('${fetchedComplaints[i]._id}')" >More Info</a></td>
                     <td><a class="btn btn-sm btn-success" onclick="whatsapp('${fetchedComplaints[i]._id}')" ><i class="fab fa-whatsapp"></i></a></td>
-                    <td><a class="btn btn-sm btn-danger" onclick="delete_complaint('${fetchedComplaints[i]._id}')" ><i class="fas fa-trash"></i></a></td>
+                    <td>${fetchedComplaints[i].region}</td>
                     </tr>`
                     element = element + e
                     c++
