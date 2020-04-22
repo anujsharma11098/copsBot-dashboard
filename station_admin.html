@@ -68,7 +68,7 @@
             <nav class="navbar navbar-expand-lg navbar-transparent navbar-absolute fixed-top ">
                 <div class="container-fluid">
                     <div class="navbar-wrapper">
-                        <a class="navbar-brand" href="javascript:void(0)">ALL COMPLAINTS</a>
+                        <a class="navbar-brand" href="javascript:void(0)">Admins</a>
                     </div>
                     <button class="navbar-toggler" type="button" data-toggle="collapse" aria-controls="navigation-index"
                         aria-expanded="false" aria-label="Toggle navigation">
@@ -111,20 +111,16 @@
                             <!--Table-->
                             <table class="table table-hover">
                                 <!--Table head-->
-                                
+                                <td><a class="btn btn-sm btn-success" onclick="notify()">ADD ADMIN</a></td>
                                 <!--Table-->
                                 <table class="table table-hover">
                                     <!--Table head-->
                                     <thead class="mdb-color darken-3">
                                         <tr class="text-white">
                                             <th>#</th>
-                                            <th>Full Name</th>
-                                            <th>Complaints</th>
-                                            <th>Status</th>
-                                            <th>Location</th>
-                                            <th>Data</th>
-                                            <th>Share</th>
+                                            <th>Username</th>
                                             <th>Region</th>
+                                            <th>Delete</th>
 
                                         </tr>
                                     </thead>
@@ -143,51 +139,7 @@
 
 
                 </div>
-                <div class="modal" id="myModal">
-                    <div class="modal-dialog">
-                        <div class="modal-content" style="background-color:#212529; color:#eee;">
 
-                            <!-- Modal Header -->
-                            <div class="modal-header">
-                                <h4 class="modal-title">Info</h4>
-                                <button type="button" class="close" data-dismiss="modal"
-                                    style="color:#FFFFFF;">&times;</button>
-                            </div>
-
-                            <!-- Modal body -->
-                            <div class="modal-body" style="margin: 15px;background-color:#3C4858">
-                                <div class="tital">Full Name :&emsp;&emsp;&emsp;<span id="fullName"
-                                        style="color:#FFFFFF;width:100%;"> </span></div>
-                                <div class="tital">Complaint :&emsp;&emsp;&emsp;<span id="complaints"
-                                        style="color:#FFFFFF;">
-                                    </span></div>
-                                <div class="tital">Age :&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;<span id="age"
-                                        style="color:#FFFFFF;"> </span></div>
-                                <div class="tital">Gender :&emsp;&emsp;&emsp;&emsp;&emsp;<span id="gender"
-                                        style="color:#FFFFFF;"> </span></div>
-                                <div class="tital">Phone Number :&emsp;<span id="phno" style="color:#FFFFFF"></span>
-                                </div>
-                                <div class="tital">IMEI :&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;<i id="imei"
-                                        style="color:#FFFFFF;"> </i></div>
-                                <div class="tital">Date of Incident :&emsp;<span id="date" style="color:#FFFFFF;">
-                                    </span></div>
-                                <div class="tital">Time of Incident :&emsp;<span id="time" style="color:#FFFFFF;">
-                                    </span></div>
-                                <div class="tital">Place of Incident :&emsp;<span id="place" style="color:#FFFFFF;">
-                                    </span></div>
-                                <div class="tital">Status :&emsp;&emsp;&emsp;&emsp;&emsp;<span id="status"
-                                        style="color:#FFFFFF;"> </span></div>
-                            </div>
-
-                            <!-- Modal footer -->
-                            <div class="modal-footer">
-
-                                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-                            </div>
-
-                        </div>
-                    </div>
-                </div>
 
                 <div class="modal" id="my_Modal">
                     <div class="modal-dialog">
@@ -195,7 +147,7 @@
 
                             <!-- Modal Header -->
                             <div class="modal-header">
-                                <h4 class="modal-title">Send to Whatsapp</h4>
+                                <h4 class="modal-title">ADD STATION ADMIN</h4>
                                 <button type="button" class="close" data-dismiss="modal"
                                     style="color:#FFFFFF;">&times;</button>
                             </div>
@@ -204,9 +156,12 @@
                             <div class="modal-body" style="background-color:#3C4858;">
                                 <!--                                <form>-->
                                 <!--                                    <div class="form-group">-->
-                                <!--                                        <label for="phn"><b>Phone Number</b></label>-->
-                                <!--                                        <input type="text" class="form-control" id="phn"-->
-                                <!--                                            placeholder="Enter Mobile number" style="color:black">-->
+                                <label for="usr"><b>Username</b></label>
+                                <input type="text" class="form-control" id="usr" placeholder="Enter Username"
+                                    style="width: 100%;  padding: 12px 20px;  margin: 8px 0;  display: inline-block; border: 1px solid #ccc;  border-radius: 4px;  box-sizing: border-box;">
+                                <label for="pass"><b>Password</b></label>
+                                <input type="text" class="form-control" id="pass" placeholder="Enter Password"
+                                    style="width: 100%;  padding: 12px 20px;  margin: 8px 0;  display: inline-block; border: 1px solid #ccc;  border-radius: 4px;  box-sizing: border-box;">
                                 <input type="text" hidden="true" id="u_id">
                                 <!--                                    </div>-->
                                 <!--                                </form>-->
@@ -454,119 +409,6 @@
                     getComplaints()
                 }, 10000)
             })
-            let ogComplaints
-            const getComplaints = async () => {
-                let result = await fetch('https://copsbot-api.herokuapp.com/api/complaints', {
-                    headers: {
-                        'Authorization': user.token
-                    }
-                })
-                result = await result.json()
-                const fetchedComplaints = result.complaints
-                let element
-                let c = 1
-                for (let i = fetchedComplaints.length - 1; i >= 0; i--) {
-                    let button
-                    switch (fetchedComplaints[i]['status']) {
-                        case 0:
-                            button = `<td><a id="${fetchedComplaints[i]._id}" class="btn btn-sm btn-warning" >Pending</a></td>`
-                            break;
-                        case 1:
-                            button = `<td><a id="${fetchedComplaints[i]._id}" class="btn btn-sm btn-success">Active</a></td>`
-                            break;
-                        case 2:
-                            button = `<td><a id="${fetchedComplaints[i]._id}" class="btn btn-sm btn-danger">Closed</a></td>`
-                            break;
-                    }
-                    let e = `<tr>
-                    <th scope="row">${c}<input type='text' hidden='true' value='${fetchedComplaints[i]._id}'></th>
-                                <td>${fetchedComplaints[i].victimName}</td>
-                    <td>${fetchedComplaints[i].complaint}</td>
-                    ${button}
-                    <td><a href="./map.html?lat=${fetchedComplaints[i].iLatitude}&lng=${fetchedComplaints[i].iLongitude}" class="btn btn-sm btn-primary"> <span class="glyphicon glyphicon-map-marker"></span>Map</a></td>
-                    <td><a class="btn btn-sm btn-default" onclick="info('${fetchedComplaints[i]._id}')" >More Info</a></td>
-                    <td><a class="btn btn-sm btn-success" onclick="whatsapp('${fetchedComplaints[i]._id}')" ><i class="fab fa-whatsapp"></i></a></td>
-                    <td>${fetchedComplaints[i].region}</td>
-                    </tr>`
-                    element = element + e
-                    c++
-                }
-                $('.complaints').empty()
-                $('.complaints').append(element)
-                ogComplaints = element
-                if (result.newComplaintsCount > 0) {
-                    iziToast.show({
-                        timeout: 3000,
-                        position: 'topRight',
-                        theme: 'dark',
-                        transitionIn: 'fadeInLeft',
-                        message: `${result.newComplaintsCount} New Complaints`
-                    });
-                }
-            }
-            function changeStatus(id) {
-                console.log(id)
-                fetch('https://copsbot-api.herokuapp.com/api/complaints/' + id, {
-                    method: 'CHECKOUT',
-                    headers: {
-                        'Authorization': user.token
-                    }
-                }).then(res => res.json()).then(json => {
-                    if (json.statusBefore == 0) {
-                        $(`#${id}`).text('Active')
-                        $(`#${id}`).addClass('btn-success')
-                    }
-                    else if (json.statusBefore == 1) {
-                        $(`#${id}`).text('Closed')
-                        $(`#${id}`).addClass('btn-danger')
-                        setTimeout(() => {
-                            location.reload()
-                        }, 1500)
-                    }
-                }).catch(err => {
-                    console.log(err)
-                })
-            }
-            function info(id) {
-                console.log(id)
-                fetch(`https://copsbot-api.herokuapp.com/api/complaints/${id}`, {
-                    headers: {
-                        'Authorization': user.token
-                    }
-                }).then(res => res.json()).then(json => {
-                    console.log(json)
-                    $('#fullName').text(json.complaint.victimName)
-                    $('#complaints').text(json.complaint.complaint)
-                    $('#age').text(json.complaint.age)
-                    $('#imei').text(json.complaint.userInfo[0].IMEI)
-                    $('#phno').text(json.complaint.userInfo[0].phoneNumber)
-                    let d = json.complaint.createdAt
-                    d = d.split('T')
-                    $('#date').text(d[0])
-                    $('#time').text(d[1])
-                    $('#place').text(json.complaint.iLatitude + ' ' + json.complaint.iLongitude)
-                    switch (json.complaint.gender) {
-                        case 'M':
-                            $('#gender').text('Male')
-                            break;
-                        case 'F':
-                            $('#gender').text('Female')
-                            break;
-                        default:
-                            $('#gender').text('Other')
-                            break;
-                    }
-                    switch (json.complaint.status) {
-                        case 0:
-                            $('#status').text('Pending')
-                            break;
-                        case 1:
-                            $('#status').text('Active')
-                            break;
-                    }
-                }).catch(err => console.log(err))
-                $("#myModal").modal()
-            }
 
             function delete_complaint(id) {
                 fetch(`https://copsbot-api.herokuapp.com/api/complaints/${id}`, {
@@ -587,40 +429,8 @@
                 }).catch(err => console.log(err))
             }
 
-            function whatsapp(id) {
-                $('#u_id').val(id)
 
-                $("#my_Modal").modal()
 
-            }
-            async function notify() {
-
-                let obj = {
-
-                    region: $("#region option:selected").text(),
-                    complaintId: $('#u_id').val()
-                }
-                $("#my_Modal").modal('toggle')
-                let result = await fetch('https://cops-bot.herokuapp.com/api/whatsapp', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(obj)
-                })
-                result = await result.json()
-                console.log(result)
-                iziToast.show({
-                    timeout: 3000,
-                    position: 'topRight',
-                    icon: 'fas fa-check-circle',
-                    iconColor: 'green',
-                    backgroundColor: '#61F75F',
-                    transitionIn: 'fadeInLeft',
-                    message: `Data sent Successfully !!`
-                });
-
-            }
 
             const search = () => {
                 const resultRows = []
@@ -653,6 +463,36 @@
                 })
                 $('.complaints').empty()
                 resultRows.forEach(row => $('.complaints').append(row))
+            }
+
+
+            async function notify() {
+
+                let obj = {
+                    Username: $("#usr").text(),
+                    region: $("#region option:selected").text(),
+                    complaintId: $('#u_id').val()
+                }
+                $("#my_Modal").modal('toggle')
+                let result = await fetch('#', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(obj)
+                })
+                result = await result.json()
+                console.log(result)
+                iziToast.show({
+                    timeout: 3000,
+                    position: 'topRight',
+                    icon: 'fas fa-check-circle',
+                    iconColor: 'green',
+                    backgroundColor: '#61F75F',
+                    transitionIn: 'fadeInLeft',
+                    message: `Data sent Successfully !!`
+                });
+
             }
 
 
