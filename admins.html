@@ -133,7 +133,6 @@
                                             <th>Sr. no.</th>
                                             <th>Username</th>
                                             <th>Region</th>
-                                            <th>Action</th>
 
                                         </tr>
                                     </thead>
@@ -420,7 +419,6 @@
                                 <td>${index + 1}</td>
                                 <td>${admin.username}</td>
                                 <td>${admin.region}</td>
-                                <td><a class="btn btn-sm btn-danger" onclick="deleteAdmin('${admin._id}')"><i class="fas fa-trash"></a></td>
                             </tr>
                         `
                         template += row
@@ -429,10 +427,6 @@
                     $('.admins').append(template)
                     ogAdmins = template
                 }).catch(err => console.log(err))
-            }
-
-            function deleteAdmin(id) {
-                console.log(id)
             }
 
             const search = () => {
@@ -486,23 +480,31 @@
 
             function addAdmin() {
                 let obj = {
-                    username: $("#usr").text(),
+                    username: $("#usr").val(),
                     region: $("#region option:selected").text(),
                     password: $('#pass').val()
                 }
-                console.log(obj)
-                iziToast.show({
-                    timeout: 3000,
-                    position: 'topRight',
-                    icon: 'fas fa-check-circle',
-                    iconColor: 'green',
-                    backgroundColor: '#61F75F',
-                    transitionIn: 'fadeInLeft',
-                    message: `Data sent Successfully !!`
-                });
+                fetch(`https://copsbot-api.herokuapp.com/api/dashboard/register`, {
+                    method: 'POST',
+                    headers: {
+                        Authorization: user.token,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(obj)
+                })
+                    .then(res => res.json())
+                    .then(json => {
+                        iziToast.error({
+                            timeout: 3000,
+                            position: 'topRight',
+                            transitionIn: 'fadeInLeft',
+                            message: json.message
+                        });
+                        if (json.status === 201) location.reload()
+                    })
+                    .catch(err => console.log(err))
                 $("#my_Modal").modal('toggle')
             }
-
 
         </script>
 </body>

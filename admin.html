@@ -497,27 +497,68 @@
                 }
             }
             function changeStatus(id) {
-                console.log(id)
-                fetch('https://copsbot-api.herokuapp.com/api/complaints/' + id, {
-                    method: 'CHECKOUT',
-                    headers: {
-                        'Authorization': user.token
-                    }
-                }).then(res => res.json()).then(json => {
-                    if (json.statusBefore == 0) {
-                        $(`#${id}`).text('Active')
-                        $(`#${id}`).addClass('btn-success')
-                    }
-                    else if (json.statusBefore == 1) {
-                        $(`#${id}`).text('Closed')
-                        $(`#${id}`).addClass('btn-danger')
-                        setTimeout(() => {
-                            location.reload()
-                        }, 1500)
-                    }
-                }).catch(err => {
-                    console.log(err)
-                })
+                iziToast.question({
+                    timeout: 20000,
+                    close: false,
+                    overlay: true,
+                    displayMode: 'once',
+                    id: 'statusQuestion',
+                    zindex: 999,
+                    title: 'Reason?',
+                    message: 'Why you want to change status',
+                    position: 'center',
+                    drag: false,
+                    inputs: [
+                        ['<input type="text" id="changeStatusQuestion">']
+                    ],
+                    buttons: [
+                        ['<button><b>Confirm</b></button>', function (instance, toast) {
+                            let reason = $('#changeStatusQuestion').val()
+                            if (!reason)
+                                return iziToast.warning({
+                                    title: 'Caution',
+                                    message: 'Reason is required',
+                                });
+                            let obj = {
+                                reason
+                            }
+                            fetch('https://copsbot-api.herokuapp.com/api/complaints/' + id, {
+                                method: 'CHECKOUT',
+                                headers: {
+                                    'Authorization': user.token,
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify(obj)
+                            }).then(res => res.json()).then(json => {
+                                if (json.status !== 200)
+                                    return iziToast.error({
+                                        title: 'Error',
+                                        message: json.message,
+                                    });
+                                if (json.statusBefore == 0) {
+                                    $(`#${id}`).text('Active')
+                                    $(`#${id}`).addClass('btn-success')
+                                }
+                                else if (json.statusBefore == 1) {
+                                    $(`#${id}`).text('Closed')
+                                    $(`#${id}`).addClass('btn-danger')
+                                    setTimeout(() => {
+                                        location.reload()
+                                    }, 1500)
+                                }
+                            }).catch(err => {
+                                console.log(err)
+                            })
+                            instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+
+                        }, true],
+                        ['<button>Cancel</button>', function (instance, toast) {
+
+                            instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+
+                        }],
+                    ]
+                });
             }
             function info(id) {
                 console.log(id)
@@ -561,22 +602,59 @@
             }
 
             function delete_complaint(id) {
-                fetch(`https://copsbot-api.herokuapp.com/api/complaints/${id}`, {
-                    method: 'DELETE',
-                    headers: {
-                        'Authorization': user.token
-                    }
-                }).then(res => res.json()).then(json => {
-                    iziToast.show({
-                        timeout: 3000,
-                        position: 'topRight',
-                        theme: 'light',
-                        color: 'red',
-                        transitionIn: 'fadeInLeft',
-                        message: `Complaint Deleted`
-                    });
-                    location.reload()
-                }).catch(err => console.log(err))
+                iziToast.question({
+                    timeout: 20000,
+                    close: false,
+                    overlay: true,
+                    displayMode: 'once',
+                    id: 'statusQuestion',
+                    zindex: 999,
+                    title: 'Delete?',
+                    message: 'Why you want to delete this?',
+                    position: 'center',
+                    drag: false,
+                    inputs: [
+                        ['<input type="text" id="deleteQuestion">']
+                    ],
+                    buttons: [
+                        ['<button><b>Confirm</b></button>', function (instance, toast) {
+                            let reason = $('#deleteQuestion').val()
+                            if (!reason)
+                                return iziToast.warning({
+                                    title: 'Caution',
+                                    message: 'Reason is required',
+                                });
+                            let obj = {
+                                reason
+                            }
+                            fetch(`https://copsbot-api.herokuapp.com/api/complaints/${id}`, {
+                                method: 'DELETE',
+                                headers: {
+                                    'Authorization': user.token,
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify(obj)
+                            }).then(res => res.json()).then(json => {
+                                iziToast.show({
+                                    timeout: 3000,
+                                    position: 'topRight',
+                                    theme: 'light',
+                                    color: 'red',
+                                    transitionIn: 'fadeInLeft',
+                                    message: json.message
+                                });
+                                if (json.status === 200) location.reload()
+                            }).catch(err => console.log(err))
+                            instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+
+                        }, true],
+                        ['<button>Cancel</button>', function (instance, toast) {
+
+                            instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+
+                        }],
+                    ]
+                });
             }
 
             function whatsapp(id) {

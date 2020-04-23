@@ -514,29 +514,7 @@
                     });
                 }
             }
-            function changeStatus(id) {
-                console.log(id)
-                fetch('https://copsbot-api.herokuapp.com/api/complaints/' + id, {
-                    method: 'CHECKOUT',
-                    headers: {
-                        'Authorization': user.token
-                    }
-                }).then(res => res.json()).then(json => {
-                    if (json.statusBefore == 0) {
-                        $(`#${id}`).text('Active')
-                        $(`#${id}`).addClass('btn-success')
-                    }
-                    else if (json.statusBefore == 1) {
-                        $(`#${id}`).text('Closed')
-                        $(`#${id}`).addClass('btn-danger')
-                        setTimeout(() => {
-                            location.reload()
-                        }, 1500)
-                    }
-                }).catch(err => {
-                    console.log(err)
-                })
-            }
+
             function info(id) {
                 console.log(id)
                 fetch(`https://copsbot-api.herokuapp.com/api/complaints/${id}`, {
@@ -576,25 +554,6 @@
                     }
                 }).catch(err => console.log(err))
                 $("#myModal").modal()
-            }
-
-            function delete_complaint(id) {
-                fetch(`https://copsbot-api.herokuapp.com/api/complaints/${id}`, {
-                    method: 'DELETE',
-                    headers: {
-                        'Authorization': user.token
-                    }
-                }).then(res => res.json()).then(json => {
-                    iziToast.show({
-                        timeout: 3000,
-                        position: 'topRight',
-                        theme: 'light',
-                        color: 'red',
-                        transitionIn: 'fadeInLeft',
-                        message: `Complaint Deleted`
-                    });
-                    location.reload()
-                }).catch(err => console.log(err))
             }
 
             function whatsapp(id) {

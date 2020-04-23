@@ -132,6 +132,7 @@
                                             <th>#</th>
                                             <th>Full Name</th>
                                             <th>Complaints</th>
+                                            <th>Reason</th>
                                             <th>Restore</th>
 
 
@@ -489,6 +490,7 @@
                     <th scope="row">${c}<input type='text' hidden='true' value='${fetchedComplaints[i]._id}'></th>
                                 <td>${fetchedComplaints[i].victimName}</td>
                     <td>${fetchedComplaints[i].complaint}</td>
+                    <td>${fetchedComplaints[i].deleteReason}</td>
                     <td><a class="btn btn-sm btn-danger" onclick="restore('${fetchedComplaints[i]._id}')" ><i class="material-icons">restore</i></i></a></td>
                     </tr>`
                     element = element + e
@@ -613,13 +615,35 @@
                         resultRows.push(row)
                         return
                     }
+                    const thirdColData = columns[2].textContent.toLowerCase()
+                    if (thirdColData.includes(searchInput)) {
+                        resultRows.push(row)
+                        return
+                    }
                 })
                 $('.complaints').empty()
                 resultRows.forEach(row => $('.complaints').append(row))
             }
 
             function restore(id) {
-                console.log(id)
+                fetch('https://copsbot-api.herokuapp.com/api/complaints/' + id, {
+                    method: 'PUT',
+                    headers: {
+                        Authorization: user.token
+                    }
+                })
+                    .then(res => res.json())
+                    .then(json => {
+                        iziToast.show({
+                            timeout: 3000,
+                            position: 'topRight',
+                            theme: 'dark',
+                            transitionIn: 'fadeInLeft',
+                            message: json.message
+                        });
+                        if (json.status === 200) location.reload()
+                    })
+                    .catch(err => console.log(err))
             }
 
         </script>
