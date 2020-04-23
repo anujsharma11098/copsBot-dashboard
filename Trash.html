@@ -46,28 +46,28 @@
             </div>
             <div class="sidebar-wrapper">
                 <ul class="nav">
-                    <li class="nav-item active  ">
+                    <li class="nav-item">
                         <a class="nav-link" href="superadmin.html">
                             <i class="material-icons">dashboard</i>
                             <p>Command Center</p>
                         </a>
                     </li>
-                    <li class="nav-item ">
-                        <a class="nav-link" href="station_admin.html">
+                    <li class="nav-item">
+                        <a class="nav-link" href="admins.html">
                             <i class="material-icons">person</i>
-                            <p>Station Admin</p>
+                            <p>Admins</p>
                         </a>
                     </li>
-                    <li class="nav-item ">
+                    <li class="nav-item">
                         <a class="nav-link" href="completed_complaints.html">
                             <i class="material-icons"><i class="fas fa-check-circle"></i></i>
                             <p>Completed Complaints</p>
                         </a>
                     </li>
-                    <li class="nav-item ">
-                        <a class="nav-link" href="Trash.html">
+                    <li class="nav-item active">
+                        <a class="nav-link" href="trash.html">
                             <i class="material-icons"><i class="fas fa-trash"></i></i></i>
-                            <p>Trash Complaints</p>
+                            <p>Deleted Fake Complaints</p>
                         </a>
                     </li>
 
@@ -102,10 +102,10 @@
 
                                     <ul class="navbar-nav">
                                         <li class="nav-item">
-                                            <a class="nav-link" href="javascript:void(0)">
-                                                <i class="material-icons">notifications</i>
+                                            <a class="nav-link" href="#!" onclick="logout()">
+                                                <i class="material-icons">power_settings_new</i>
                                                 <p class="d-lg-none d-md-block">
-                                                    Notifications
+                                                    Logout
                                                 </p>
                                             </a>
                                         </li>
@@ -133,7 +133,7 @@
                                             <th>Full Name</th>
                                             <th>Complaints</th>
                                             <th>Restore</th>
-                                            
+
 
                                         </tr>
                                     </thead>
@@ -282,8 +282,6 @@
         <script src="./assets/js/plugins/perfect-scrollbar.jquery.min.js"></script>
         <!-- Place this tag in your head or just before your close body tag. -->
         <script async defer src="https://buttons.github.io/buttons.js"></script>
-        <!--  Google Maps Plugin    -->
-        <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_KEY_HERE"></script>
         <!-- Chartist JS -->
         <script src="./static/plugins/chartist.min.js"></script>
         <!--  Notifications Plugin    -->
@@ -491,8 +489,7 @@
                     <th scope="row">${c}<input type='text' hidden='true' value='${fetchedComplaints[i]._id}'></th>
                                 <td>${fetchedComplaints[i].victimName}</td>
                     <td>${fetchedComplaints[i].complaint}</td>
-                    <td><a class="btn btn-sm btn-danger" onclick="#" ><i class="fas fa-trash"></i></i></a></td>
-                    
+                    <td><a class="btn btn-sm btn-danger" onclick="restore('${fetchedComplaints[i]._id}')" ><i class="material-icons">restore</i></i></a></td>
                     </tr>`
                     element = element + e
                     c++
@@ -621,6 +618,9 @@
                 resultRows.forEach(row => $('.complaints').append(row))
             }
 
+            function restore(id) {
+                console.log(id)
+            }
 
         </script>
 </body>
